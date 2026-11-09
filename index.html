@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="description" content="สื่อการเรียนรู้วิชาการช่างพื้นฐาน ม.4 พร้อมบทเรียน ห้องทดลองเวอร์เนียร์ แบบทดสอบ และใบประกาศนียบัตร">
+    <title>สื่อการเรียนรู้วิชาการช่างพื้นฐาน ม.4 | Technic Craft Academy</title>
+    <!-- Google Fonts: Prompt & Sarabun -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for quiz completion -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        prompt: ['Prompt', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif'],
+                    },
+                    colors: {
+                        workshop: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                            dark: '#0f172a',
+                            panel: '#1e293b',
+                            amber: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .font-sarabun {
+            font-family: 'Sarabun', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #14b8a6;
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.95; transform: scale(0.99); }
+        }
+        .pulse-effect {
+            animation: pulse-subtle 3s infinite ease-in-out;
+        }
+        /* Refinements: readable learning UI, accessible focus and reliable A4 output */
+        :focus-visible { outline: 3px solid #2dd4bf; outline-offset: 3px; }
+        button, input, select { -webkit-tap-highlight-color: transparent; }
+        .tab-btn { flex-shrink: 0; }
+        header { box-shadow: 0 8px 30px rgba(2, 6, 23, .18); }
+        #modulesGrid > div { background: linear-gradient(155deg, rgba(30,41,59,.96), rgba(15,23,42,.98)); }
+        #modulesGrid > div:hover { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(2, 6, 23, .28); }
+        #sec-modules > div:first-child { box-shadow: inset 0 1px rgba(255,255,255,.04), 0 18px 45px rgba(2,6,23,.22); }
+        #quizActiveCard, #quizResultCard, #quizStartCard { box-shadow: 0 20px 55px rgba(2,6,23,.28); }
+        #lessonBody h4 { color: #5eead4; margin-top: 1.25rem; }
+        #lessonBody p, #lessonBody li { line-height: 1.85; }
+        #lessonBody img { max-width: 100%; height: auto; border-radius: 1rem; }
+        #quizChoicesContainer button { min-height: 58px; line-height: 1.65; }
+        #quizChoicesContainer button:focus-visible { outline-offset: 2px; }
+        #certContainer { box-sizing: border-box; }
+        @media (max-width: 700px) {
+            #certContainer { transform-origin: top left; }
+        }
+        @page { size: A4 landscape; margin: 8mm; }
+        @media print {
+            html, body { width: 100%; height: auto; min-height: 0 !important; margin: 0 !important; padding: 0 !important; background: #fff !important; color: #111827 !important; }
+            body * { visibility: hidden !important; }
+            #certModal, #certModal * { visibility: visible !important; }
+            #certModal { position: static !important; display: block !important; inset: auto !important; padding: 0 !important; margin: 0 !important; overflow: visible !important; background: #fff !important; backdrop-filter: none !important; }
+            #certModal > div { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: #fff !important; }
+            #certModal > div > div:first-child, #certModal > div > div:last-child { display: none !important; }
+            #certModal > div > div:nth-child(2) { display: block !important; padding: 0 !important; margin: 0 !important; overflow: visible !important; border: 0 !important; background: #fff !important; }
+            #certContainer { width: 277mm !important; height: 190mm !important; max-width: none !important; margin: 0 auto !important; border: 3mm double #334155 !important; border-radius: 0 !important; box-shadow: none !important; print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }
+            #certContainer * { visibility: visible !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between custom-scrollbar bg-slate-950 text-slate-100 selection:bg-teal-500 selection:text-white">
+
+    <!-- STUDENT REGISTRATION MODAL (Mandatory before app access) -->
+    <div id="studentGatekeeperModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl"></div>
+            <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl"></div>
+
+            <div class="text-center mb-6 relative z-10">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-teal-500 text-slate-950 text-2xl font-bold mb-3 shadow-lg shadow-teal-500/20">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">ลงทะเบียนเข้าสู่บทเรียน</h2>
+                <p class="text-xs text-slate-400 mt-1 font-sarabun">รายวิชาการช่างพื้นฐาน ระดับชั้นมัธยมศึกษาปีที่ 4</p>
+            </div>
+
+            <div id="emailAuthPanel" class="space-y-4 relative z-10 font-sarabun">
+                <div class="rounded-2xl border border-teal-500/20 bg-teal-500/5 p-4 text-center">
+                    <div class="text-teal-300 text-sm font-semibold"><i class="fa-solid fa-shield-halved mr-2"></i>ยืนยันตัวตนด้วยอีเมล</div>
+                    <p class="text-xs text-slate-400 mt-1">ระบบจะส่งรหัส OTP 6 หลักไปยังอีเมลของคุณ</p>
+                </div>
+                <div id="emailStep">
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="loginEmail">อีเมล</label>
+                    <input type="email" id="loginEmail" required maxlength="254" autocomplete="email" placeholder="student@example.com" class="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 text-sm text-white placeholder-slate-500 outline-none">
+                    <button id="sendOtpBtn" type="button" onclick="appState.requestEmailOtp()" class="w-full mt-3 py-3 px-4 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl transition"><i class="fa-solid fa-paper-plane mr-2"></i>ส่งรหัส OTP</button>
+                </div>
+                <div id="otpStep" class="hidden">
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="loginOtp">รหัส OTP 6 หลัก</label>
+                    <input type="text" id="loginOtp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="กรอกรหัส 6 หลัก" class="w-full px-4 py-3 text-center tracking-[.5em] text-xl font-bold bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 text-white placeholder-slate-500 outline-none">
+                    <p id="otpEmailHint" class="text-xs text-slate-400 mt-2"></p>
+                    <button id="verifyOtpBtn" type="button" onclick="appState.verifyEmailOtp()" class="w-full mt-3 py-3 px-4 bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold rounded-xl transition"><i class="fa-solid fa-lock-open mr-2"></i>ยืนยัน OTP และเข้าสู่ระบบ</button>
+                    <div class="flex justify-between mt-3 text-xs"><button type="button" onclick="appState.backToEmailStep()" class="text-slate-400 hover:text-white">เปลี่ยนอีเมล</button><button type="button" onclick="appState.requestEmailOtp(true)" class="text-teal-300 hover:text-teal-200">ส่งรหัสอีกครั้ง</button></div>
+                </div>
+                <div id="authMessage" role="status" aria-live="polite" class="hidden p-3 rounded-xl text-xs"></div>
+                <p class="text-[11px] leading-relaxed text-slate-500">รหัส OTP มีอายุจำกัดและใช้ได้ครั้งเดียว หากไม่พบอีเมล กรุณาตรวจสอบโฟลเดอร์จดหมายขยะ</p>
+            </div>
+
+            <div id="verifiedEmailBanner" class="hidden mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-sarabun"><i class="fa-solid fa-circle-check mr-2"></i>ยืนยันอีเมลแล้ว: <strong id="verifiedEmailText"></strong></div>
+            <form id="studentRegistrationForm" class="hidden space-y-4 relative z-10 font-sarabun">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">คำนำหน้า และ ชื่อ-นามสกุล <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
+                            <i class="fa-solid fa-user text-sm"></i>
+                        </span>
+                        <input type="text" id="regFullName" required maxlength="100" autocomplete="name" placeholder="นายสมชาย ใจดี" 
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm text-white placeholder-slate-500 outline-none transition">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">เลขประจำตัวนักเรียน <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
+                                <i class="fa-solid fa-id-card text-sm"></i>
+                            </span>
+                            <input type="text" id="regStudentId" required maxlength="8" inputmode="numeric" autocomplete="off" placeholder="12345" pattern="[0-9]{4,8}"
+                                class="w-full pl-10 pr-3 py-2.5 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm text-white placeholder-slate-500 outline-none transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">เลขที่ <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
+                                <i class="fa-solid fa-hashtag text-sm"></i>
+                            </span>
+                            <input type="number" id="regNo" min="1" max="60" required placeholder="15"
+                                class="w-full pl-10 pr-3 py-2.5 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm text-white placeholder-slate-500 outline-none transition">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">ห้องเรียน <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
+                            <i class="fa-solid fa-graduation-cap text-sm"></i>
+                        </span>
+                        <select id="regClassRoom" required
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm text-white outline-none transition">
+                            <option value="" disabled selected>เลือกห้องเรียน ม.4</option>
+                            <option value="ม.4/1">มัธยมศึกษาปีที่ 4/1</option>
+                            <option value="ม.4/2">มัธยมศึกษาปีที่ 4/2</option>
+                            <option value="ม.4/3">มัธยมศึกษาปีที่ 4/3</option>
+                            <option value="ม.4/4">มัธยมศึกษาปีที่ 4/4</option>
+                            <option value="ม.4/5">มัธยมศึกษาปีที่ 4/5</option>
+                            <option value="ม.4/6">มัธยมศึกษาปีที่ 4/6</option>
+                            <option value="ม.4/7">มัธยมศึกษาปีที่ 4/7</option>
+                            <option value="ม.4/8">มัธยมศึกษาปีที่ 4/8</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="registrationError" role="alert" aria-live="polite" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span id="registrationErrorMsg">กรุณากรอกข้อมูลให้ครบถ้วนทุกช่อง</span>
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-3 px-4 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-teal-500/20 active:scale-[0.98] transition flex items-center justify-center gap-2 mt-4 text-base">
+                    <span>เริ่มเรียนรู้วิชาการช่าง</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- HEADER NAVBAR -->
+    <header class="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-teal-500 text-slate-950 flex items-center justify-center font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-gears"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white tracking-wide leading-tight">วิชาการช่างพื้นฐาน ม.4</h1>
+                    <p class="text-xs text-amber-400 hidden sm:block font-sarabun">การเรียนรู้เทคโนโลยีและทักษะช่างในโรงงานปฏิบัติการ</p>
+                </div>
+            </div>
+
+            <!-- Student Profile Badge & Certificate Trigger -->
+            <div id="studentProfileHeader" class="flex items-center gap-2 sm:gap-4">
+                <div class="text-right hidden sm:block font-sarabun">
+                    <p id="headerStudentName" class="text-sm font-semibold text-slate-200">ยังไม่ได้เข้าสู่ระบบ</p>
+                    <p id="headerStudentMeta" class="text-xs text-slate-400">ม.4/-- | เลขที่ --</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="viewCertBtn" onclick="appState.openCertificate()" disabled title="ประกาศนียบัตร (ทำแบบทดสอบให้ผ่านก่อน)"
+                        class="px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-amber-400 hover:border-amber-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition text-xs font-medium flex items-center gap-1.5">
+                        <i class="fa-solid fa-award text-amber-400 text-sm"></i>
+                        <span class="hidden md:inline">ใบประกาศนียบัตร</span>
+                    </button>
+                    <button onclick="appState.resetRegistration()" title="ออกจากระบบ"
+                        class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+                        <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="bg-slate-900 border-t border-slate-800/60 px-4 sm:px-8">
+            <div class="max-w-7xl mx-auto flex space-x-1 sm:space-x-4 overflow-x-auto py-2 scrollbar-none text-sm font-medium">
+                <button onclick="appState.switchTab('modules')" id="tab-modules" class="tab-btn active px-4 py-2 rounded-xl transition flex items-center gap-2 whitespace-nowrap bg-teal-500/10 text-teal-400 border border-teal-500/30">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>บทเรียนการช่าง</span>
+                </button>
+                <button onclick="appState.switchTab('lab')" id="tab-lab" class="tab-btn px-4 py-2 rounded-xl transition flex items-center gap-2 whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i class="fa-solid fa-microscope"></i>
+                    <span>คลังเครื่องมือปฏิสัมพันธ์</span>
+                </button>
+                <button onclick="appState.switchTab('quiz')" id="tab-quiz" class="tab-btn px-4 py-2 rounded-xl transition flex items-center gap-2 whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i class="fa-solid fa-clipboard-question"></i>
+                    <span>แบบทดสอบท้ายบท</span>
+                    <span id="quizBadge" class="hidden ml-1 px-1.5 py-0.5 text-[10px] bg-amber-500 text-slate-950 font-bold rounded-full">ผ่านแล้ว</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+        <!-- TAB 1: MODULES LEARNING CENTER -->
+        <section id="sec-modules" class="space-y-6">
+            <!-- Welcome Banner -->
+            <div class="p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 relative overflow-hidden shadow-xl">
+                <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-teal-500/10 to-transparent pointer-events-none"></div>
+                <div class="relative z-10 max-w-2xl">
+                    <span class="px-3 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-xs font-semibold inline-block mb-2">หลักสูตรแกนกลางการศึกษาขั้นพื้นฐาน</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">ยินดีต้อนรับสู่บทเรียนวิชาการช่าง ม.4</h2>
+                    <p class="text-slate-300 text-sm font-sarabun leading-relaxed">
+                        ศึกษาความรู้พื้นฐานเกี่ยวกับความปลอดภัยในโรงงานช่าง เครื่องมือวัด เครื่องมือมือถือ งานไฟฟ้าเบื้องต้น และงานวัสดุเทคโนโลยี เพื่อเตรียมความพร้อมสู่ทักษะปฏิบัติงานจริง
+                    </p>
+                </div>
+            </div>
+
+            <!-- Course Modules Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="modulesGrid">
+                <!-- Dynamic Content Rendered Here -->
+            </div>
+        </section>
+
+        <!-- TAB 2: INTERACTIVE TOOL LAB -->
+        <section id="sec-lab" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-compass-drafting text-teal-400"></i>
+                            <span>ห้องปฏิบัติการจำลอง: อ่านค่าเครื่องมือวัดละเอียด</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 font-sarabun mt-1">ทดลองปรับสเกลเวอร์เนียร์คาลิปเปอร์ (Vernier Caliper) และฝึกอ่านค่าความละเอียด 0.05 มม.</p>
+                    </div>
+                    <div class="bg-slate-800 px-4 py-2 rounded-xl border border-slate-700 text-xs font-mono text-teal-400">
+                        สถานะ: เครื่องมือจำลองพร้อมทำงาน
+                    </div>
+                </div>
+
+                <!-- Vernier Caliper Interactive Visualizer -->
+                <div class="py-8 my-4 bg-slate-950 rounded-2xl border border-slate-800 p-4 flex flex-col items-center justify-center relative overflow-hidden">
+                    <div class="text-center mb-4">
+                        <span class="text-xs text-slate-400">ค่าที่อ่านได้จากเวอร์เนียร์คาลิปเปอร์</span>
+                        <div class="text-4xl font-mono font-bold text-amber-400 tracking-wider my-1" id="caliperValueDisplay">12.45 <span class="text-base font-normal text-slate-400">mm</span></div>
+                    </div>
+
+                    <!-- Vernier Graphics Canvas / Visualizer -->
+                    <div class="w-full max-w-2xl bg-slate-900 rounded-xl p-6 border border-slate-800 shadow-inner overflow-x-auto">
+                        <div class="min-w-[500px]">
+                            <!-- Main Scale Mock -->
+                            <div class="h-16 bg-gradient-to-b from-slate-300 to-slate-400 rounded-t-lg relative border-b-2 border-slate-700 font-mono text-[10px] text-slate-900 select-none">
+                                <div class="absolute top-1 left-2 font-bold text-slate-700">MAIN SCALE (1 mm)</div>
+                                <div id="mainScaleTicks" class="absolute bottom-0 left-10 right-10 h-8 flex justify-between items-end">
+                                    <!-- Dynamic Ticks generated by JS -->
+                                </div>
+                            </div>
+                            <!-- Vernier Sliding Scale Mock -->
+                            <div id="vernierSlider" class="h-14 bg-gradient-to-b from-amber-400 to-amber-500 rounded-b-lg relative font-mono text-[10px] text-slate-950 transition-all duration-150 shadow-lg border-t border-amber-300">
+                                <div class="absolute bottom-1 left-2 font-bold text-amber-950">VERNIER SCALE (0.05 mm)</div>
+                                <div id="vernierTicks" class="absolute top-0 left-0 right-0 h-6 flex justify-between items-start">
+                                    <!-- Dynamic Vernier Ticks -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Control Slider -->
+                    <div class="w-full max-w-xl mt-6 px-4">
+                        <label class="block text-xs font-semibold text-slate-300 mb-2 text-center">ปรับตำแหน่งสเกลเวอร์เนียร์ (0.00 ถึง 50.00 มม.)</label>
+                        <input type="range" id="caliperRange" min="0" max="50" step="0.05" value="12.45" 
+                            class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400">
+                        <div class="flex justify-between text-xs text-slate-500 mt-1 font-mono">
+                            <span>0.00 mm</span>
+                            <span>25.00 mm</span>
+                            <span>50.00 mm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part Breakdown Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 font-sarabun text-xs">
+                    <div class="p-3 bg-slate-800/50 rounded-xl border border-slate-700/60">
+                        <span class="font-bold text-teal-400 block mb-1"><i class="fa-solid fa-gear"></i> 1. ปากวัดภายนอก (Outside Jaws)</span>
+                        <span>ใช้สำหรับวัดขนาดภายนอกของชิ้นงาน เช่น ความหนา เส้นผ่านศูนย์กลางภายนอก</span>
+                    </div>
+                    <div class="p-3 bg-slate-800/50 rounded-xl border border-slate-700/60">
+                        <span class="font-bold text-teal-400 block mb-1"><i class="fa-solid fa-circle-dot"></i> 2. ปากวัดภายใน (Inside Jaws)</span>
+                        <span>ใช้สำหรับวัดขนาดความกว้างภายใน เช่น รูเจาะ ร่องสลัก หรือท่อ</span>
+                    </div>
+                    <div class="p-3 bg-slate-800/50 rounded-xl border border-slate-700/60">
+                        <span class="font-bold text-teal-400 block mb-1"><i class="fa-solid fa-arrows-left-right-to-line"></i> 3. ก้านวัดลึก (Depth Rod)</span>
+                        <span>ก้านยื่นด้านท้ายสำหรับวัดความลึกของรู หรือร่องชิ้นงาน</span>
+                    </div>
+                    <div class="p-3 bg-slate-800/50 rounded-xl border border-slate-700/60">
+                        <span class="font-bold text-teal-400 block mb-1"><i class="fa-solid fa-ruler-horizontal"></i> 4. สเกลโนเนียส (Vernier Scale)</span>
+                        <span>สเกลเลื่อนที่ช่วยแบ่งความละเอียดของการวัดย่อย (เช่น 0.02 หรือ 0.05 มม.)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: QUIZ EVALUATION CENTER -->
+        <section id="sec-quiz" class="hidden space-y-6">
+            <div id="quizStartCard" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 text-center max-w-2xl mx-auto shadow-2xl">
+                <div class="w-20 h-20 bg-amber-500/10 text-amber-400 rounded-3xl border border-amber-500/20 flex items-center justify-center text-3xl mx-auto mb-4">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-2">แบบทดสอบวัดผลการเรียนรู้วิชาการช่าง ม.4</h2>
+                <p class="text-slate-300 text-sm font-sarabun mb-6 leading-relaxed">
+                    แบบทดสอบปรนัยจำนวน 10 ข้อ ครอบคลุมเนื้อหาเรื่องความปลอดภัย เครื่องมือช่าง งานไฟฟ้า และวัสดุช่าง <br>
+                    <span class="text-amber-400 font-semibold">เกณฑ์การผ่าน: 70% ขึ้นไป (7/10 คะแนน) เพื่อรับใบประกาศนียบัตร</span>
+                </p>
+
+                <div class="bg-slate-800/60 rounded-2xl p-4 text-left font-sarabun text-xs space-y-2 mb-6 border border-slate-700">
+                    <div class="flex items-center gap-2 text-slate-300">
+                        <i class="fa-solid fa-circle-check text-teal-400"></i>
+                        <span>ทำได้ไม่จำกัดจำนวนครั้ง</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-300">
+                        <i class="fa-solid fa-clock text-teal-400"></i>
+                        <span>ไม่มีกำหนดเวลาต่อข้อ</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-300">
+                        <i class="fa-solid fa-certificate text-teal-400"></i>
+                        <span>ระบบบันทึกคะแนนและพิมพ์ใบประกาศนียบัตรให้ทันทีหลังผ่านเกณฑ์</span>
+                    </div>
+                </div>
+
+                <button onclick="appState.startQuiz()" class="py-3 px-8 bg-gradient-to-r from-amber-500 to-teal-500 hover:from-amber-400 hover:to-teal-400 text-slate-950 font-bold rounded-2xl shadow-lg shadow-amber-500/20 active:scale-95 transition text-base inline-flex items-center gap-2">
+                    <i class="fa-solid fa-play"></i>
+                    <span>เริ่มทำแบบทดสอบ</span>
+                </button>
+            </div>
+
+            <!-- Active Quiz Container -->
+            <div id="quizActiveCard" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-3xl mx-auto shadow-2xl">
+                <!-- Quiz Progress Bar -->
+                <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-sarabun">
+                    <span id="quizProgressText">คำถามข้อที่ 1 จาก 10</span>
+                    <span id="quizScoreTracker" class="font-mono text-teal-400 font-bold">คะแนนสะสม: 0</span>
+                </div>
+                <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-6">
+                    <div id="quizProgressBar" class="h-full bg-gradient-to-r from-amber-500 to-teal-500 w-0 transition-all duration-300"></div>
+                </div>
+
+                <!-- Question Title -->
+                <div class="mb-6">
+                    <span id="questionCategory" class="text-[11px] px-2.5 py-1 rounded-full bg-slate-800 text-teal-400 font-semibold border border-slate-700 inline-block mb-2">หมวดความปลอดภัย</span>
+                    <h3 id="questionText" class="text-lg font-bold text-white leading-relaxed">คำถามจะปรากฏที่นี่...</h3>
+                </div>
+
+                <!-- Choices Grid -->
+                <div id="quizChoicesContainer" class="space-y-3 font-sarabun mb-6">
+                    <!-- Choices generated dynamically -->
+                </div>
+
+                <!-- Question Feedback Alert -->
+                <div id="quizFeedback" class="hidden p-4 rounded-2xl border text-xs font-sarabun mb-6 transition-all duration-200">
+                    <!-- Feedback content -->
+                </div>
+
+                <!-- Quiz Actions -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                    <span class="text-xs text-slate-500 font-sarabun">เลือกตอบเพื่อไปยังข้อถัดไป</span>
+                    <button id="nextQuestionBtn" onclick="appState.nextQuestion()" disabled class="px-6 py-2.5 bg-teal-500 hover:bg-teal-400 disabled:opacity-40 disabled:hover:bg-teal-500 text-slate-950 font-bold rounded-xl text-sm transition flex items-center gap-2">
+                        <span>ข้อถัดไป</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Result Summary Card -->
+            <div id="quizResultCard" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 text-center max-w-xl mx-auto shadow-2xl">
+                <div id="resultIcon" class="w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 border-4">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h3 id="resultTitle" class="text-2xl font-bold text-white mb-1">ผลการทดสอบ</h3>
+                <p id="resultSubtitle" class="text-xs text-slate-400 font-sarabun mb-6">สรุปผลการประเมินวิชาการช่าง ม.4</p>
+
+                <div class="bg-slate-950 rounded-2xl p-6 border border-slate-800 mb-6 font-mono">
+                    <div class="text-xs text-slate-400 mb-1">คะแนนที่คุณได้</div>
+                    <div id="resultScoreText" class="text-5xl font-extrabold text-amber-400">0 / 10</div>
+                    <div id="resultPercentage" class="text-sm text-teal-400 mt-2 font-bold">คิดเป็น 0%</div>
+                </div>
+
+                <div id="resultStatusBox" class="p-4 rounded-2xl mb-6 text-sm font-sarabun">
+                    <!-- Result Status details -->
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="appState.startQuiz()" class="py-2.5 px-5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-sm transition border border-slate-700 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>ทำแบบทดสอบอีกครั้ง</span>
+                    </button>
+                    <button id="resultCertBtn" onclick="appState.openCertificate()" class="hidden py-2.5 px-5 bg-gradient-to-r from-amber-500 to-teal-500 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-award"></i>
+                        <span>ดูใบประกาศนียบัตร</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CERTIFICATE MODAL -->
+    <div id="certModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md hidden overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-6 max-w-3xl w-full shadow-2xl my-auto">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-800 mb-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-award text-amber-400"></i>
+                    <span>ใบประกาศนียบัตรการผ่านการประเมิน</span>
+                </h3>
+                <button onclick="appState.closeCertificate()" class="text-slate-400 hover:text-white p-2">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Certificate Canvas Preview / Render Area -->
+            <div class="bg-slate-950 p-2 sm:p-4 rounded-2xl border border-slate-800 flex justify-center items-center overflow-x-auto">
+                <div id="certContainer" class="w-[650px] h-[460px] bg-white text-slate-900 p-8 rounded-lg shadow-2xl relative border-8 border-slate-800 flex flex-col justify-between select-none font-sarabun" style="background-image: radial-gradient(#f1f5f9 1px, transparent 1px); background-size: 16px 16px;">
+                    <!-- Decorative Certificate Frames -->
+                    <div class="absolute inset-2 border-2 border-amber-600/40 rounded pointer-events-none"></div>
+                    <div class="absolute top-4 left-4 w-12 h-12 border-t-2 border-l-2 border-amber-600 pointer-events-none"></div>
+                    <div class="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 border-amber-600 pointer-events-none"></div>
+                    <div class="absolute bottom-4 left-4 w-12 h-12 border-b-2 border-l-2 border-amber-600 pointer-events-none"></div>
+                    <div class="absolute bottom-4 right-4 w-12 h-12 border-b-2 border-r-2 border-amber-600 pointer-events-none"></div>
+
+                    <!-- Header -->
+                    <div class="text-center mt-2">
+                        <div class="inline-block p-2 bg-slate-900 text-amber-400 rounded-full mb-1">
+                            <i class="fa-solid fa-gear text-2xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold font-prompt text-slate-900 tracking-wide uppercase">ใบประกาศนียบัตรความสำเร็จ</h4>
+                        <p class="text-xs text-slate-500 uppercase tracking-widest mt-0.5">Certificate of Completion</p>
+                    </div>
+
+                    <!-- Recipient Info -->
+                    <div class="text-center my-2 space-y-2">
+                        <p class="text-xs text-slate-600">ขอมอบใบประกาศนียบัตรฉบับนี้เพื่อแสดงว่า</p>
+                        <h2 id="certName" class="text-2xl font-bold font-prompt text-teal-800 border-b-2 border-teal-600/30 inline-block px-8 py-1">นายสมชาย ใจดี</h2>
+                        <p id="certMeta" class="text-xs text-slate-600">เลขประจำตัว: 12345 | ชั้น ม.4/1 เลขที่ 15</p>
+                        <p class="text-xs text-slate-700 max-w-md mx-auto pt-2">
+                            ได้ผ่านการทดสอบประเมินความรู้และความเข้าใจใน <span class="font-bold text-slate-900 font-prompt">"รายวิชาการช่างพื้นฐาน ระดับชั้น ม.4"</span> <br>
+                            ด้วยคะแนนประเมิน <span id="certScore" class="font-bold text-amber-600">90%</span> ได้รับการรับรองตามมาตรฐานสมรรถนะช่างพื้นฐาน
+                        </p>
+                    </div>
+
+                    <!-- Footer / Signatures -->
+                    <div class="flex justify-between items-end px-6 pb-2 text-center text-xs">
+                        <div class="space-y-1">
+                            <div class="w-32 border-b border-slate-400 mx-auto"></div>
+                            <p class="font-bold text-slate-800 font-prompt">ระบบประเมินผลดิจิทัล</p>
+                            <p class="text-[10px] text-slate-500">Technic Craft Academy</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 rounded-full border-2 border-amber-500 flex items-center justify-center text-amber-600 text-xs font-bold font-prompt bg-amber-50 mb-1">
+                                PASSED
+                            </div>
+                            <span id="certDate" class="text-[10px] text-slate-500">วันที่ออกเอกสาร: -</span>
+                            <span id="certNumber" class="text-[9px] text-slate-400">รหัสใบประกาศ: -</span>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="w-32 border-b border-slate-400 mx-auto"></div>
+                            <p class="font-bold text-slate-800 font-prompt">ครูผู้สอนประจำรายวิชา</p>
+                            <p class="text-[10px] text-slate-500">กลุ่มสาระการเรียนรู้การงานอาชีพ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3 mt-4">
+                <button onclick="window.print()" class="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold rounded-xl text-sm transition flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>พิมพ์ / บันทึก PDF</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODULE LESSON DETAILS MODAL -->
+    <div id="lessonModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md hidden overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-2xl w-full shadow-2xl my-auto font-sarabun max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-start pb-4 border-b border-slate-800 mb-4">
+                <div class="flex items-center gap-3">
+                    <div id="lessonIcon" class="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-book"></i>
+                    </div>
+                    <div>
+                        <span id="lessonCategory" class="text-xs text-amber-400 font-semibold font-prompt">หมวดวิชาที่ 1</span>
+                        <h3 id="lessonTitle" class="text-lg font-bold text-white font-prompt">ชื่อบทเรียน...</h3>
+                    </div>
+                </div>
+                <button onclick="appState.closeLesson()" class="text-slate-400 hover:text-white p-2">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div id="lessonBody" class="space-y-4 overflow-y-auto pr-2 custom-scrollbar text-slate-300 text-sm leading-relaxed flex-1">
+                <!-- Content injected dynamically -->
+            </div>
+
+            <div class="pt-4 border-t border-slate-800 mt-4 flex justify-between items-center font-prompt">
+                <span class="text-xs text-slate-500">มัธยมศึกษาปีที่ 4 - สื่อการเรียนรู้แบบโต้ตอบ</span>
+                <button onclick="appState.closeLesson()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl text-xs transition">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500 font-sarabun">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>© 2026 Technic Craft Academy - สื่อการเรียนรู้วิชาการช่าง ม.4</p>
+            <p class="flex items-center gap-1">
+                <i class="fa-solid fa-shield-halved text-teal-500"></i>
+                <span>ระบบบันทึกผลการเรียนรายบุคคล</span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT APPLICATION ENGINE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // DATA STRUCTURE: COURSE MODULES CONTENT FOR GRADE 10 (ม.4)
+        const COURSE_MODULES = [
+            {
+                id: 'mod-1',
+                title: 'ความปลอดภัยและอาชีวอนามัยในโรงงานช่าง',
+                category: 'หมวดที่ 1: ความปลอดภัย',
+                icon: 'fa-shield-cat',
+                summary: 'หลักการทำงานอย่างปลอดภัย สัญลักษณ์สีเตือนภัย OSHA และการใช้งานอุปกรณ์ป้องกันภัยส่วนบุคคล (PPE)',
+                content: `
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">1. สัญลักษณ์และสีเตือนภัยในโรงงานช่าง</h4>
+                    <p class="mb-3">การปฏิบัติงานในห้องช่างต้องสังเกตสีเตือนภัยตามมาตรฐานสากล:</p>
+                    <ul class="list-disc pl-5 space-y-1 mb-4">
+                        <li><strong class="text-rose-400">สีแดง:</strong> เครื่องหมายหยุด, อุปกรณ์หยุดฉุกเฉิน, อุปกรณ์ดับเพลิง</li>
+                        <li><strong class="text-amber-400">สีเหลือง:</strong> ระวังอันตราย, พื้นที่ต่างระดับ, สิ่งกีดขวาง</li>
+                        <li><strong class="text-emerald-400">สีเขียว:</strong> ความปลอดภัย, เครื่องหมายปฐมพยาบาล, ทางออกฉุกเฉิน</li>
+                        <li><strong class="text-sky-400">สีน้ำเงิน:</strong> บังคับให้ต้องปฏิบัติตาม (เช่น สวมหมวกนิรภัย สวมแว่นตา)</li>
+                    </ul>
+
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">2. อุปกรณ์ป้องกันภัยส่วนบุคคล (PPE)</h4>
+                    <div class="grid grid-cols-2 gap-2 text-xs mb-4">
+                        <div class="p-2.5 bg-slate-800 rounded-xl border border-slate-700"><strong>แว่นตานิรภัย:</strong> กันเศษโลหะ/ประกายไฟ</div>
+                        <div class="p-2.5 bg-slate-800 rounded-xl border border-slate-700"><strong>รองเท้านิรภัย:</strong> หัวเหล็กกันของหนักตกใส่</div>
+                        <div class="p-2.5 bg-slate-800 rounded-xl border border-slate-700"><strong>หน้ากากเชื่อม:</strong> ป้องกันรังสี UV/IR และแสงจ้า</div>
+                        <div class="p-2.5 bg-slate-800 rounded-xl border border-slate-700"><strong>ถุงมือหนัง:</strong> กันความร้อนและความคมของโลหะ</div>
+                    </div>
+
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">3. กฎความปลอดภัยพื้นฐาน 5 ส</h4>
+                    <p>สะสาง สะดวก สะอาด สุขลักษณะ สร้างนิสัย เป็นหัวใจสำคัญในการลดอุบัติเหตุจากการทำงานช่าง</p>
+                `
+            },
+            {
+                id: 'mod-2',
+                title: 'เครื่องมือวัดและร่างแบบพื้นฐาน',
+                category: 'หมวดที่ 2: งานวัดและร่างแบบ',
+                icon: 'fa-ruler-combined',
+                summary: 'การใช้งานไม้บรรทัดเหล็ก ฉากเหล็ก เวอร์เนียร์คาลิปเปอร์ และไมโครมิเตอร์อย่างถูกต้อง',
+                content: `
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">1. เครื่องมือวัดขนาดชิ้นงาน</h4>
+                    <p class="mb-3">การเลือกเครื่องมือวัดต้องเหมาะสมกับความละเอียดของชิ้นงานที่ต้องการ:</p>
+                    <ul class="list-disc pl-5 space-y-2 mb-4">
+                        <li><strong>ไม้บรรทัดเหล็ก (Steel Rule):</strong> ความละเอียดประมาณ 0.5 มม. เหมาะกับงานร่างแบบทั่วไป</li>
+                        <li><strong>ฉากเหล็ก (Try Square):</strong> ใช้ตรวจสอบมุมฉาก (90 องศา) และการได้ระดับของขอบชิ้นงาน</li>
+                        <li><strong>เวอร์เนียร์คาลิปเปอร์ (Vernier Caliper):</strong> วัดได้ทั้งภายนอก ภายใน และความลึก ความละเอียด 0.02 หรือ 0.05 มม.</li>
+                        <li><strong>ไมโครมิเตอร์ (Micrometer):</strong> ความละเอียดสูงมากถึง 0.01 มม. ใช้กับงานกลึง งานเพลาละเอียด</li>
+                    </ul>
+
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">2. ข้อควรระวังในการรักษาเครื่องมือวัด</h4>
+                    <p>ห้ามวางเครื่องมือวัดคมซ้อนทับกัน ห้ามนำเวอร์เนียร์ไปใช้แทนคีมหรือประแจ และต้องทำความสะอาดชโลมน้ำมันกันสนิมหลังใช้งานทุกครั้ง</p>
+                `
+            },
+            {
+                id: 'mod-3',
+                title: 'เครื่องมือช่างมือถือและการบำรุงรักษา',
+                category: 'หมวดที่ 3: เครื่องมือช่าง',
+                icon: 'fa-hammer',
+                summary: 'เทคนิคการใช้คีม ไขควง ประแจ ค้อน และเลื่อยตัดเหล็กอย่างถูกวิธี',
+                content: `
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">1. ประเภทและประเภทคีม (Pliers)</h4>
+                    <ul class="list-disc pl-5 space-y-1 mb-3">
+                        <li><strong>คีมปากจับ/ปากแบน:</strong> จับชิ้นงาน ดัดสายไฟ</li>
+                        <li><strong>คีมตัด:</strong> ใช้ตัดสายไฟ หรือเส้นลวด (ห้ามนำไปตัดตะปูขนาดใหญ่)</li>
+                        <li><strong>คีมล็อค (Vise Grip):</strong> จับยึดชิ้นงานแน่นหนาไม่ให้หมุนหลุด</li>
+                    </ul>
+
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">2. เลื่อยตัดเหล็ก (Hack Saw)</h4>
+                    <p class="mb-2">การใส่ใบเลื่อยตัดเหล็กต้องหัน <strong class="text-amber-400">ปลายฟันเลื่อยออกไปทางด้านหน้า</strong> เสมอ จังหวะการตัดให้เลื่อยออกแรงดันไปข้างหน้า และถอยกลับเบาๆ</p>
+                `
+            },
+            {
+                id: 'mod-4',
+                title: 'งานไฟฟ้าและอิเล็กทรอนิกส์เบื้องต้น',
+                category: 'หมวดที่ 4: งานไฟฟ้า',
+                icon: 'fa-bolt',
+                summary: 'วงจรไฟฟ้าพื้นฐาน การต่อวงจรแบบอนุกรม-ขนาน อุปกรณ์ป้องกันไฟฟ้า และมัลติมิเตอร์',
+                content: `
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">1. กฎของโอห์ม (Ohm's Law)</h4>
+                    <p class="mb-3 bg-slate-800 p-3 rounded-xl border border-slate-700 font-mono text-center text-teal-400 text-base">
+                        V = I × R (แรงดัน = กระแส × ความต้านทาน)
+                    </p>
+
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">2. การต่อวงจรไฟฟ้าในบ้าน</h4>
+                    <p class="mb-2">การต่ออุปกรณ์ไฟฟ้าในบ้านใช้วงจร <strong class="text-amber-400">แบบขนาน (Parallel Circuit)</strong> เพื่อให้อุปกรณ์แต่ละชิ้นได้รับแรงดันไฟฟ้าเท่ากัน (220V) และเมื่อตัวใดตัวหนึ่งเสีย ตัวอื่นยังคงทำงานได้</p>
+
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">3. อุปกรณ์ป้องกันในวงจรไฟฟ้า</h4>
+                    <p><strong>ฟิวส์ (Fuse) & เบรกเกอร์ (Circuit Breaker):</strong> ตัดวงจรอัตโนมัติเมื่อเกิดกระแสไฟฟ้าเกิน หรือไฟฟ้าลัดวงจร</p>
+                `
+            },
+            {
+                id: 'mod-5',
+                title: 'วัสดุช่างและกระบวนการแปรรูป',
+                category: 'หมวดที่ 5: วัสดุช่าง',
+                icon: 'fa-cubes',
+                summary: 'คุณสมบัติของโลหะ ไม้ พลาสติก สลักภัณฑ์ (Fasteners) และการประสานงาน',
+                content: `
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">1. ประเภทของวัสดุงานช่าง</h4>
+                    <ul class="list-disc pl-5 space-y-1 mb-3">
+                        <li><strong>โลหะกลุ่มเหล็ก (Ferrous):</strong> มีเหล็กเป็นส่วนผสมหลัก มีคุณสมบัติถูกแม่เหล็กดูดติด เช่น เหล็กกล้า เหล็กหล่อ</li>
+                        <li><strong>โลหะนอกกลุ่มเหล็ก (Non-Ferrous):</strong> ไม่มีเหล็ก แม่เหล็กดูดไม่ติด เช่น อลูมิเนียม ทองแดง ทองเหลือง</li>
+                        <li><strong>วัสดุสังเคราะห์:</strong> ไม้สังเคราะห์ (MDF, Plywood), พลาสติก (Superlene, PVC)</li>
+                    </ul>
+
+                    <h4 class="text-base font-bold text-white font-prompt mb-2">2. สลักภัณฑ์ยึดติด (Fasteners)</h4>
+                    <p>การยึดชิ้นงานมีทั้งแบบถอดได้ (โบลต์-นัต, สกรู) และแบบถาวร (การเชื่อม, หมุดย้ำ, กาวอีพ็อกซี่)</p>
+                `
+            }
+        ];
+
+        // QUIZ QUESTION BANK (10 Questions for Grade 10)
+        const QUIZ_QUESTIONS = [
+            {
+                category: 'ความปลอดภัย',
+                question: 'สีเตือนภัยในโรงงานปฏิบัติการช่าง "สีแดง" หมายถึงอะไร?',
+                choices: [
+                    'พื้นที่ปลอดภัยและอุปกรณ์ปฐมพยาบาล',
+                    'เครื่องหมายหยุด อุปกรณ์หยุดฉุกเฉิน และอุปกรณ์ดับเพลิง',
+                    'เตือนให้ระมัดระวังอันตรายจากพื้นต่างระดับ',
+                    'บังคับให้ต้องสวมใส่อุปกรณ์นิรภัย'
+                ],
+                correct: 1,
+                explanation: 'สีแดง ตามมาตรฐานสากลใช้เป็นเครื่องหมายหยุด สวิตช์หยุดฉุกเฉิน และสัญลักษณ์เกี่ยวกับอุปกรณ์ดับเพลิง'
+            },
+            {
+                category: 'เครื่องมือวัด',
+                question: 'หากต้องการวัดเส้นผ่านศูนย์กลางภายนอกของท่อเหล็กด้วยความละเอียด 0.05 มม. ควรเลือกใช้เครื่องมือใด?',
+                choices: [
+                    'ไม้บรรทัดเหล็ก',
+                    'ตลับเมตร',
+                    'เวอร์เนียร์คาลิปเปอร์',
+                    'ฉากเหล็ก'
+                ],
+                correct: 2,
+                explanation: 'เวอร์เนียร์คาลิปเปอร์เป็นเครื่องมือวัดละเอียดที่สามารถวัดได้ทั้งขนาดภายนอก ภายใน และความลึก มีความละเอียดสูงถึง 0.02 - 0.05 มม.'
+            },
+            {
+                category: 'เครื่องมือวัด',
+                question: 'ส่วนใดของเวอร์เนียร์คาลิปเปอร์ที่ทำหน้าที่วัด "ความลึก" ของรูชิ้นงาน?',
+                choices: [
+                    'ปากวัดภายนอก (Outside Jaws)',
+                    'ปากวัดภายใน (Inside Jaws)',
+                    'ก้านวัดลึก (Depth Rod)',
+                    'สเกลโนเนียส (Vernier Scale)'
+                ],
+                correct: 2,
+                explanation: 'ก้านวัดลึก (Depth Rod) ซึ่งยื่นออกทางด้านท้ายของเวอร์เนียร์ ใช้สำหรับสอดลงไปวัดความลึกของรูหรือร่องชิ้นงาน'
+            },
+            {
+                category: 'เครื่องมือช่าง',
+                question: 'การติดตั้งใบเลื่อยตัดเหล็ก (Hack Saw) เข้ากับกรอบเลื่อยที่ถูกต้อง ปลายฟันเลื่อยควรหันไปในทิศทางใด?',
+                choices: [
+                    'หันปลายฟันเลื่อยออกไปทางด้านหน้า (ชี้ออกจากผู้เลื่อย)',
+                    'หันปลายฟันเลื่อยเข้าหาตัวผู้เลื่อย',
+                    'หันปลายฟันเลื่อยไปทางซ้ายหรือขวาตามความถนัด',
+                    'หันไปทิศทางใดก็ได้ไม่มีผลต่อการเลื่อย'
+                ],
+                correct: 0,
+                explanation: 'ใบเลื่อยตัดเหล็กกินงานในจังหวะดันไปข้างหน้า จึงต้องติดใบเลื่อยให้ปลายฟันชี้ไปทางด้านหน้าเสมอ'
+            },
+            {
+                category: 'เครื่องมือช่าง',
+                question: 'คีมชนิดใดเหมาะสำหรับใช้จับยึดนัตหรือหัวสกรูที่ชำรุดแน่นหนาไม่ให้หมุนตาม?',
+                choices: [
+                    'คีมปากจิ้งจก',
+                    'คีมตัดสายไฟ',
+                    'คีมล็อค (Vise Grip)',
+                    'คีมปากขยาย'
+                ],
+                correct: 2,
+                explanation: 'คีมล็อคสามารถปรับความแน่นของการหนีบและล็อคตำแหน่งจับชิ้นงานได้อย่างแน่นหนา'
+            },
+            {
+                category: 'งานไฟฟ้า',
+                question: 'การต่ออุปกรณ์ไฟฟ้าภายในบ้านส่วนใหญ่ใช้การต่อวงจรแบบใด?',
+                choices: [
+                    'วงจรแบบอนุกรม (Series)',
+                    'วงจรแบบขนาน (Parallel)',
+                    'วงจรแบบผสม',
+                    'วงจรแบบเปิด'
+                ],
+                correct: 1,
+                explanation: 'การต่อแบบขนานทำให้อุปกรณ์ไฟฟ้าทุกชิ้นได้รับแรงดันไฟฟ้าเท่ากัน (220V) และหากอุปกรณ์ตัวใดเปิด/ปิดหรือชำรุด ตัวอื่นยังคงทำงานได้'
+            },
+            {
+                category: 'งานไฟฟ้า',
+                question: 'อุปกรณ์ไฟฟ้าชนิดใดทำหน้าที่ตัดวงจรไฟฟ้าอัตโนมัติเมื่อเกิด "กระแสไฟฟ้าเกิน" หรือไฟฟ้าลัดวงจร?',
+                choices: [
+                    'สวิตช์ไฟ',
+                    'หม้อแปลงไฟฟ้า',
+                    'ฟิวส์ / เบรกเกอร์',
+                    'ตัวต้านทาน'
+                ],
+                correct: 2,
+                explanation: 'ฟิวส์และเบรกเกอร์เป็นอุปกรณ์ป้องกันอันตราย ทำหน้าที่หลอมละลายหรือตัดวงจรเมื่อมีกระแสไฟฟ้าไหลผ่านเกินกำหนด'
+            },
+            {
+                category: 'ความปลอดภัย',
+                question: 'เมื่อทำการเชื่อมโลหะด้วยไฟฟ้า อุปกรณ์ PPE ชนิดใดมีความจำเป็นที่สุดในการป้องกันรังสี UV และประกายไฟเข้าตา?',
+                choices: [
+                    'แว่นตากันฝุ่น',
+                    'หน้ากากเชื่อม (Welding Helmet/Shield)',
+                    'หมวกนิรภัย',
+                    'ถุงมือผ้าทั่วไป'
+                ],
+                correct: 1,
+                explanation: 'การเชื่อมไฟฟ้าจะเกิดแสงจ้า รังสี UV/IR และประกายไฟ จึงต้องใช้หน้ากากเชื่อมที่มีกระจกกรองแสงเฉพาะ'
+            },
+            {
+                category: 'วัสดุช่าง',
+                question: 'ข้อใดคือคุณสมบัติเด่นของ "โลหะกลุ่มเหล็ก" (Ferrous Metals)?',
+                choices: [
+                    'แม่เหล็กดูดไม่ติด และไม่เกิดสนิม',
+                    'มีเหล็กเป็นส่วนผสมหลัก และแม่เหล็กสามารถดูดติดได้',
+                    'น้ำหนักเบากว่าอลูมิเนียมมาก',
+                    'นำไฟฟ้าไม่ได้เลย'
+                ],
+                correct: 1,
+                explanation: 'โลหะกลุ่มเหล็ก (เช่น เหล็กกล้า เหล็กเหนียว เหล็กหล่อ) มีส่วนประกอบหลักคือเหล็ก จึงถูกแม่เหล็กดูดติดได้'
+            },
+            {
+                category: 'ความปลอดภัย',
+                question: 'หากพบเพื่อนนักเรียนถูกไฟฟ้าช็อตในห้องปฏิบัติการช่าง ขั้นตอนแรกสุดที่ต้องทำคืออะไร?',
+                choices: [
+                    'วิ่งเข้าไปใช้มือเปล่าฉุดดึงเพื่อนออกมาทันที',
+                    'ตัดกระแสไฟฟ้าหลัก (สับคัตเอาต์/เบรกเกอร์) หรือใช้เขี่ยด้วยวัสดุที่เป็นฉนวน',
+                    'สเปรย์น้ำใส่ผู้ป่วยเพื่อดับไฟ',
+                    'นั่งรอจนกว่าไฟฟ้าจะดับเอง'
+                ],
+                correct: 1,
+                explanation: 'ห้ามสัมผัสตัวผู้ถูกไฟช็อตโดยตรง ต้องตัดวงจรไฟฟ้าหลักก่อน หรือใช้วัสดุฉนวนแห้ง (เช่น ไม้แห้ง) ดันสายไฟออก เพื่อความปลอดภัยของผู้ช่วยเหลือ'
+            }
+        ];
+
+        // SUPABASE AUTH CONFIGURATION (public anon key only; never place service_role here)
+        let supabaseClient = null;
+
+        // ตั้งค่าเป็น URL ของเซิร์ฟเวอร์ที่ติดตั้ง backend เช่น https://your-domain.com/api
+        // ห้ามใส่ SMTP password หรือ secret key ในไฟล์ HTML นี้
+
+        // GLOBAL APP STATE
+        const appState = {
+            authenticatedEmail: null,
+            pendingEmail: null,
+
+            student: null,
+            activeTab: 'modules',
+            quiz: {
+                currentIdx: 0,
+                score: 0,
+                answers: [],
+                passed: false,
+                isCompleted: false,
+                passed: false,
+                lastPercentage: 0
+            },
+
+            init() {
+                // Require a valid server-issued session before opening learning content.
+                this.restoreAuthSession();
+
+                // Render modules grid
+                this.renderModules();
+
+                // Setup Caliper Slider listener
+                const caliperRange = document.getElementById('caliperRange');
+                if (caliperRange) {
+                    caliperRange.addEventListener('input', (e) => {
+                        this.updateCaliperUI(parseFloat(e.target.value));
+                    });
+                    this.updateCaliperUI(12.45);
+                }
+
+                // Registration form submit handler
+                document.getElementById('studentRegistrationForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleRegistration();
+                });
+            },
+
+            showAuthMessage(message, type = 'error') {
+                const box = document.getElementById('authMessage');
+                box.textContent = message;
+                box.className = `p-3 rounded-xl text-xs ${type === 'success' ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300' : 'bg-rose-500/10 border border-rose-500/30 text-rose-300'}`;
+            },
+
+            async requestEmailOtp(resend = false) {
+                const email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    this.showAuthMessage('กรุณากรอกอีเมลให้ถูกต้อง'); return;
+                }
+                if (!supabaseClient) { this.showAuthMessage('ยังไม่ได้ตั้งค่า Supabase กรุณาตรวจสอบ Environment Variables บน Vercel'); return; }
+                const btn = document.getElementById('sendOtpBtn');
+                btn.disabled = true; btn.classList.add('opacity-60');
+                try {
+                    const { error } = await supabaseClient.auth.signInWithOtp({
+                        email,
+                        options: { shouldCreateUser: true }
+                    });
+                    if (error) throw error;
+                    this.pendingEmail = email;
+                    document.getElementById('emailStep').classList.add('hidden');
+                    document.getElementById('otpStep').classList.remove('hidden');
+                    document.getElementById('otpEmailHint').textContent = `ส่งรหัสไปที่ ${email} แล้ว กรุณากรอกรหัสภายในเวลาที่กำหนด`;
+                    document.getElementById('loginOtp').value = '';
+                    document.getElementById('loginOtp').focus();
+                    this.showAuthMessage(resend ? 'ส่งรหัส OTP ใหม่แล้ว กรุณาตรวจสอบอีเมล' : 'ส่งรหัส OTP แล้ว กรุณาตรวจสอบอีเมล', 'success');
+                } catch (error) { this.showAuthMessage(this.translateAuthError(error)); }
+                finally { btn.disabled = false; btn.classList.remove('opacity-60'); }
+            },
+
+            translateAuthError(error) {
+                const message = String(error?.message || 'ไม่สามารถดำเนินการได้ กรุณาลองอีกครั้ง');
+                if (/rate limit|too many requests/i.test(message)) return 'ส่งรหัสบ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่';
+                if (/invalid email/i.test(message)) return 'รูปแบบอีเมลไม่ถูกต้อง';
+                if (/email not confirmed/i.test(message)) return 'ยังไม่สามารถยืนยันอีเมลได้ กรุณาตรวจสอบการตั้งค่า Supabase';
+                return message;
+            },
+
+            backToEmailStep() {
+                document.getElementById('otpStep').classList.add('hidden');
+                document.getElementById('emailStep').classList.remove('hidden');
+                document.getElementById('authMessage').classList.add('hidden');
+            },
+
+            async verifyEmailOtp() {
+                const otp = (document.getElementById('loginOtp').value || '').trim();
+                if (!/^\d{6}$/.test(otp)) { this.showAuthMessage('กรุณากรอกรหัส OTP ให้ครบ 6 หลัก'); return; }
+                const btn = document.getElementById('verifyOtpBtn');
+                btn.disabled = true; btn.classList.add('opacity-60');
+                try {
+                    const { data, error } = await supabaseClient.auth.verifyOtp({
+                        email: this.pendingEmail,
+                        token: otp,
+                        type: 'email'
+                    });
+                    if (error) throw error;
+                    if (!data.user) throw new Error('ไม่พบข้อมูลผู้ใช้หลังยืนยัน OTP');
+                    this.authenticatedEmail = String(data.user.email || this.pendingEmail).toLowerCase();
+                    this.showVerifiedUser();
+                } catch (error) { this.showAuthMessage(this.translateAuthError(error) || 'รหัส OTP ไม่ถูกต้องหรือหมดอายุ'); }
+                finally { btn.disabled = false; btn.classList.remove('opacity-60'); }
+            },
+
+            async restoreAuthSession() {
+                if (!supabaseClient) return;
+                try {
+                    const { data, error } = await supabaseClient.auth.getSession();
+                    if (error) throw error;
+                    const user = data?.session?.user;
+                    if (!user?.email) return;
+                    this.authenticatedEmail = user.email.toLowerCase();
+                    await this.showVerifiedUser();
+                } catch (error) {
+                    console.warn('ไม่สามารถกู้คืนเซสชัน Supabase ได้', error);
+                }
+            },
+
+            async showVerifiedUser() {
+                const email = this.authenticatedEmail;
+                document.getElementById('emailAuthPanel').classList.add('hidden');
+                let profile = null;
+                try {
+                    const { data: remoteProfile, error } = await supabaseClient
+                        .from('student_profiles').select('full_name, student_id, student_number, classroom, email')
+                        .eq('user_id', (await supabaseClient.auth.getUser()).data.user.id).maybeSingle();
+                    if (error) throw error;
+                    if (remoteProfile) profile = {
+                        name: remoteProfile.full_name, id: remoteProfile.student_id,
+                        number: remoteProfile.student_number, classRoom: remoteProfile.classroom,
+                        email: remoteProfile.email
+                    };
+                } catch (error) { console.warn('โหลดโปรไฟล์จาก Supabase ไม่สำเร็จ', error); }
+                if (!profile) {
+                    const savedStudent = localStorage.getItem('tech_craft_student');
+                    try { profile = savedStudent ? JSON.parse(savedStudent) : null; } catch (e) {}
+                }
+                if (profile && String(profile.email || '').toLowerCase() === email) {
+                    this.student = profile;
+                    this.updateStudentHeader();
+                    await this.restoreQuizResult();
+                    document.getElementById('studentGatekeeperModal').classList.add('hidden');
+                } else {
+                    this.student = null;
+                    document.getElementById('verifiedEmailBanner').classList.remove('hidden');
+                    document.getElementById('verifiedEmailText').textContent = email;
+                    document.getElementById('studentRegistrationForm').classList.remove('hidden');
+                }
+            },
+
+            async clearAuthSession() {
+                if (supabaseClient) {
+                    try { await supabaseClient.auth.signOut(); } catch (error) { console.warn('Sign out failed', error); }
+                }
+                this.authenticatedEmail = null;
+                this.student = null;
+                document.getElementById('studentGatekeeperModal').classList.remove('hidden');
+                document.getElementById('emailAuthPanel').classList.remove('hidden');
+                document.getElementById('studentRegistrationForm').classList.add('hidden');
+                document.getElementById('verifiedEmailBanner').classList.add('hidden');
+            },
+
+            async handleRegistration() {
+                const name = document.getElementById('regFullName').value.trim();
+                const stdId = document.getElementById('regStudentId').value.trim();
+                const no = document.getElementById('regNo').value.trim();
+                const classRoom = document.getElementById('regClassRoom').value;
+                const errBox = document.getElementById('registrationError');
+
+                if (!this.authenticatedEmail) {
+                    errBox.classList.remove('hidden');
+                    document.getElementById('registrationErrorMsg').textContent = 'กรุณายืนยันอีเมลด้วย OTP ก่อนลงทะเบียน';
+                    return;
+                }
+                if (!name || !stdId || !no || !classRoom) {
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+
+                errBox.classList.add('hidden');
+
+                this.student = {
+                    name,
+                    id: stdId,
+                    number: no,
+                    classRoom,
+                    email: this.authenticatedEmail,
+                    registeredAt: new Date().toLocaleDateString('th-TH')
+                };
+
+                localStorage.setItem('tech_craft_student', JSON.stringify(this.student));
+                try {
+                    const { data: userData } = await supabaseClient.auth.getUser();
+                    const { error } = await supabaseClient.from('student_profiles').upsert({
+                        user_id: userData.user.id, email: this.authenticatedEmail,
+                        full_name: name, student_id: stdId, student_number: no, classroom: classRoom,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'user_id' });
+                    if (error) throw error;
+                } catch (error) {
+                    console.error('บันทึกโปรไฟล์ Supabase ไม่สำเร็จ', error);
+                    alert('บันทึกข้อมูลในเครื่องแล้ว แต่ยังบันทึกฐานข้อมูลกลางไม่สำเร็จ กรุณาตรวจสอบการตั้งค่า Supabase');
+                }
+                this.updateStudentHeader();
+
+                // Hide Modal
+                document.getElementById('studentGatekeeperModal').classList.add('hidden');
+            },
+
+            async saveQuizResultToSupabase(result) {
+                try {
+                    const { data: userData, error: userError } = await supabaseClient.auth.getUser();
+                    if (userError || !userData.user) throw userError || new Error('ไม่พบผู้ใช้');
+                    const { error } = await supabaseClient.from('quiz_results').upsert({
+                        user_id: userData.user.id,
+                        score: result.score,
+                        total: result.total,
+                        percentage: result.percentage,
+                        passed: result.passed,
+                        answers: result.answers,
+                        completed_at: new Date().toISOString()
+                    }, { onConflict: 'user_id' });
+                    if (error) throw error;
+                } catch (error) { console.error('บันทึกผลสอบลง Supabase ไม่สำเร็จ', error); }
+            },
+
+            async restoreQuizResult() {
+                try {
+                    let saved = localStorage.getItem(`tech_craft_quiz_${this.student.id}`);
+                    let result = saved ? JSON.parse(saved) : null;
+                    if (!result && supabaseClient) {
+                        const { data: userData } = await supabaseClient.auth.getUser();
+                        const { data: remoteResult, error } = await supabaseClient
+                            .from('quiz_results').select('score, total, percentage, passed, answers, completed_at')
+                            .eq('user_id', userData.user.id).maybeSingle();
+                        if (error) throw error;
+                        if (remoteResult) {
+                            result = {
+                                score: remoteResult.score, total: remoteResult.total,
+                                percentage: Number(remoteResult.percentage), passed: remoteResult.passed,
+                                answers: remoteResult.answers,
+                                date: remoteResult.completed_at ? new Date(remoteResult.completed_at).toLocaleDateString('th-TH') : ''
+                            };
+                            localStorage.setItem(`tech_craft_quiz_${this.student.id}`, JSON.stringify(result));
+                        }
+                    }
+                    if (!result) return;
+                    if (!result || !Number.isFinite(result.score) || !Number.isFinite(result.total)) return;
+                    this.quiz.score = result.score;
+                    this.quiz.passed = result.passed === true;
+                    this.quiz.isCompleted = true;
+                    this.quiz.lastPercentage = result.percentage || 0;
+                    if (this.quiz.passed) {
+                        document.getElementById('viewCertBtn').disabled = false;
+                        document.getElementById('quizBadge').classList.remove('hidden');
+                        document.getElementById('certScore').textContent = `${this.quiz.lastPercentage.toFixed(0)}%`;
+                        document.getElementById('certDate').textContent = `วันที่ออกเอกสาร: ${result.date || new Date().toLocaleDateString('th-TH')}`;
+                    }
+                } catch (error) {
+                    console.warn('ไม่สามารถกู้คืนผลการทดสอบได้', error);
+                }
+            },
+
+            async resetRegistration() {
+                if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
+                    localStorage.removeItem('tech_craft_student');
+                    this.quiz.passed = false;
+                    this.quiz.isCompleted = false;
+                    this.quiz.score = 0;
+                    document.getElementById('headerStudentName').textContent = 'ยังไม่ได้เข้าสู่ระบบ';
+                    document.getElementById('headerStudentMeta').textContent = 'กรุณายืนยันอีเมล';
+                    document.getElementById('viewCertBtn').disabled = true;
+                    document.getElementById('quizBadge').classList.add('hidden');
+                    await this.clearAuthSession();
+                    this.backToEmailStep();
+                }
+            },
+
+            updateStudentHeader() {
+                if (!this.student) return;
+                document.getElementById('headerStudentName').textContent = this.student.name;
+                document.getElementById('headerStudentMeta').textContent = `${this.student.classRoom} | เลขที่ ${this.student.number} (รหัส ${this.student.id})`;
+                
+                // Update Cert info if available
+                document.getElementById('certName').textContent = this.student.name;
+                document.getElementById('certMeta').textContent = `เลขประจำตัว: ${this.student.id} | ชั้น ${this.student.classRoom} เลขที่ ${this.student.number}`;
+                const certKey = `TCA-M4-${this.student.id}-${this.student.classRoom.replace(/[^0-9]/g, '')}`;
+                document.getElementById('certNumber').textContent = `รหัสใบประกาศ: ${certKey}`;
+            },
+
+            switchTab(tabName) {
+                this.activeTab = tabName;
+                ['modules', 'lab', 'quiz'].forEach(t => {
+                    const btn = document.getElementById(`tab-${t}`);
+                    const sec = document.getElementById(`sec-${t}`);
+                    if (t === tabName) {
+                        btn.className = "tab-btn active px-4 py-2 rounded-xl transition flex items-center gap-2 whitespace-nowrap bg-teal-500/10 text-teal-400 border border-teal-500/30 font-semibold";
+                        sec.classList.remove('hidden');
+                    } else {
+                        btn.className = "tab-btn px-4 py-2 rounded-xl transition flex items-center gap-2 whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-800";
+                        sec.classList.add('hidden');
+                    }
+                });
+            },
+
+            renderModules() {
+                const grid = document.getElementById('modulesGrid');
+                grid.innerHTML = COURSE_MODULES.map(mod => `
+                    <div class="bg-slate-900 border border-slate-800 hover:border-teal-500/50 rounded-3xl p-5 shadow-lg transition duration-300 flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-teal-400 border border-slate-700 font-sarabun">
+                                    ${mod.category}
+                                </span>
+                                <div class="w-10 h-10 rounded-2xl bg-slate-800 group-hover:bg-teal-500 group-hover:text-slate-950 text-teal-400 flex items-center justify-center text-lg transition duration-300">
+                                    <i class="fa-solid ${mod.icon}"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-base font-bold text-white mb-2 leading-snug group-hover:text-teal-300 transition">${mod.title}</h3>
+                            <p class="text-xs text-slate-400 font-sarabun leading-relaxed mb-4">${mod.summary}</p>
+                        </div>
+                        <button onclick="appState.openLesson('${mod.id}')" class="w-full py-2.5 px-4 bg-slate-800/80 hover:bg-teal-500 hover:text-slate-950 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700/80 transition flex items-center justify-center gap-2 font-prompt">
+                            <span>ศึกษาเนื้อหาเพิ่มเติม</span>
+                            <i class="fa-solid fa-book-open"></i>
+                        </button>
+                    </div>
+                `).join('');
+            },
+
+            openLesson(id) {
+                const mod = COURSE_MODULES.find(m => m.id === id);
+                if (!mod) return;
+                document.getElementById('lessonCategory').textContent = mod.category;
+                document.getElementById('lessonTitle').textContent = mod.title;
+                document.getElementById('lessonBody').innerHTML = mod.content;
+                document.getElementById('lessonIcon').innerHTML = `<i class="fa-solid ${mod.icon}"></i>`;
+                document.getElementById('lessonModal').classList.remove('hidden');
+            },
+
+            closeLesson() {
+                document.getElementById('lessonModal').classList.add('hidden');
+            },
+
+            updateCaliperUI(val) {
+                document.getElementById('caliperValueDisplay').innerHTML = `${val.toFixed(2)} <span class="text-base font-normal text-slate-400">mm</span>`;
+                const slider = document.getElementById('vernierSlider');
+                if (slider) {
+                    // Offset vernier scale based on value
+                    const offsetPx = (val / 50) * 80; // percent offset
+                    slider.style.transform = `translateX(${offsetPx}%)`;
+                }
+            },
+
+            startQuiz() {
+                this.quiz.currentIdx = 0;
+                this.quiz.score = 0;
+                this.quiz.answers = [];
+                this.quiz.isCompleted = false;
+                this.quiz.passed = false;
+
+                document.getElementById('quizStartCard').classList.add('hidden');
+                document.getElementById('quizResultCard').classList.add('hidden');
+                document.getElementById('quizActiveCard').classList.remove('hidden');
+
+                this.renderQuestion();
+                document.getElementById('quizActiveCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            },
+
+            renderQuestion() {
+                const q = QUIZ_QUESTIONS[this.quiz.currentIdx];
+                const total = QUIZ_QUESTIONS.length;
+
+                document.getElementById('quizProgressText').textContent = `คำถามข้อที่ ${this.quiz.currentIdx + 1} จาก ${total}`;
+                document.getElementById('quizScoreTracker').textContent = `คะแนนสะสม: ${this.quiz.score}`;
+                document.getElementById('quizProgressBar').style.width = `${((this.quiz.currentIdx) / total) * 100}%`;
+
+                document.getElementById('questionCategory').textContent = `หมวด: ${q.category}`;
+                document.getElementById('questionText').textContent = `${this.quiz.currentIdx + 1}. ${q.question}`;
+
+                const choicesContainer = document.getElementById('quizChoicesContainer');
+                choicesContainer.innerHTML = q.choices.map((choice, idx) => `
+                    <button onclick="appState.selectChoice(${idx})" id="choiceBtn-${idx}"
+                        class="w-full text-left p-3.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 text-xs sm:text-sm transition flex items-start gap-3 group">
+                        <span class="w-6 h-6 rounded-lg bg-slate-900 text-slate-400 group-hover:text-teal-400 flex items-center justify-center font-bold text-xs shrink-0 border border-slate-700">
+                            ${String.fromCharCode(65 + idx)}
+                        </span>
+                        <span class="mt-0.5 leading-relaxed">${choice}</span>
+                    </button>
+                `).join('');
+
+                const feedback = document.getElementById('quizFeedback');
+                feedback.className = 'hidden p-4 rounded-2xl border text-xs font-sarabun mb-6 transition-all duration-200';
+                feedback.innerHTML = '';
+
+                const nextBtn = document.getElementById('nextQuestionBtn');
+                nextBtn.disabled = true;
+            },
+
+            selectChoice(choiceIdx) {
+                if (this.quiz.answers.some(a => a.questionIdx === this.quiz.currentIdx)) return;
+                const q = QUIZ_QUESTIONS[this.quiz.currentIdx];
+                const isCorrect = choiceIdx === q.correct;
+
+                // Disable all choices
+                for (let i = 0; i < q.choices.length; i++) {
+                    const btn = document.getElementById(`choiceBtn-${i}`);
+                    btn.disabled = true;
+                    btn.classList.add('cursor-not-allowed', 'opacity-70');
+                    if (i === q.correct) {
+                        btn.className = "w-full text-left p-3.5 rounded-2xl bg-emerald-500/20 border-2 border-emerald-500 text-emerald-200 text-xs sm:text-sm flex items-start gap-3 font-semibold";
+                    } else if (i === choiceIdx && !isCorrect) {
+                        btn.className = "w-full text-left p-3.5 rounded-2xl bg-rose-500/20 border-2 border-rose-500 text-rose-200 text-xs sm:text-sm flex items-start gap-3";
+                    }
+                }
+
+                if (isCorrect) {
+                    this.quiz.score++;
+                }
+
+                this.quiz.answers.push({ questionIdx: this.quiz.currentIdx, chosen: choiceIdx, correct: isCorrect });
+
+                // Show Feedback
+                const feedback = document.getElementById('quizFeedback');
+                feedback.classList.remove('hidden');
+                if (isCorrect) {
+                    feedback.className = 'p-4 rounded-2xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-300 text-xs font-sarabun mb-6';
+                    feedback.innerHTML = `<div class="font-bold font-prompt text-sm text-emerald-400 mb-1"><i class="fa-solid fa-circle-check"></i> ถูกต้อง!</div>${q.explanation}`;
+                } else {
+                    feedback.className = 'p-4 rounded-2xl border bg-rose-500/10 border-rose-500/30 text-rose-300 text-xs font-sarabun mb-6';
+                    feedback.innerHTML = `<div class="font-bold font-prompt text-sm text-rose-400 mb-1"><i class="fa-solid fa-circle-xmark"></i> ยังไม่ถูกต้อง</div>คำตอบที่ถูกต้องคือข้อ <strong>${String.fromCharCode(65 + q.correct)}</strong><br>${q.explanation}`;
+                }
+
+                document.getElementById('nextQuestionBtn').disabled = false;
+                document.getElementById('quizScoreTracker').textContent = `คะแนนสะสม: ${this.quiz.score}`;
+            },
+
+            nextQuestion() {
+                this.quiz.currentIdx++;
+                if (this.quiz.currentIdx < QUIZ_QUESTIONS.length) {
+                    this.renderQuestion();
+                } else {
+                    this.finishQuiz();
+                }
+            },
+
+            finishQuiz() {
+                this.quiz.isCompleted = true;
+                const total = QUIZ_QUESTIONS.length;
+                const percentage = (this.quiz.score / total) * 100;
+                this.quiz.passed = percentage >= 70;
+                this.quiz.lastPercentage = percentage;
+                const resultDate = new Date().toLocaleDateString('th-TH');
+                if (this.student) {
+                    const quizResult = {
+                        score: this.quiz.score, total, percentage, passed: this.quiz.passed, date: resultDate,
+                        answers: this.quiz.answers
+                    };
+                    localStorage.setItem(`tech_craft_quiz_${this.student.id}`, JSON.stringify(quizResult));
+                    this.saveQuizResultToSupabase(quizResult);
+                }
+
+                document.getElementById('quizActiveCard').classList.add('hidden');
+                document.getElementById('quizResultCard').classList.remove('hidden');
+
+                document.getElementById('resultScoreText').textContent = `${this.quiz.score} / ${total}`;
+                document.getElementById('resultPercentage').textContent = `คิดเป็น ${percentage.toFixed(0)}% · ตอบถูก ${this.quiz.score} ข้อ · ตอบผิด ${total - this.quiz.score} ข้อ`;
+
+                const icon = document.getElementById('resultIcon');
+                const statusBox = document.getElementById('resultStatusBox');
+                const certBtn = document.getElementById('resultCertBtn');
+                const quizBadge = document.getElementById('quizBadge');
+
+                if (this.quiz.passed) {
+                    icon.className = "w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 border-4 bg-emerald-500/20 text-emerald-400 border-emerald-500/40";
+                    icon.innerHTML = '<i class="fa-solid fa-trophy"></i>';
+                    document.getElementById('resultTitle').textContent = "ยินดีด้วย! คุณผ่านการทดสอบ";
+
+                    statusBox.className = "p-4 rounded-2xl mb-6 text-sm font-sarabun bg-emerald-500/10 border border-emerald-500/30 text-emerald-300";
+                    statusBox.innerHTML = `คุณได้ผ่านเกณฑ์ประเมินความรู้วิชาการช่าง ม.4 (70% ขึ้นไป) สามารถรับและพิมพ์ใบประกาศนียบัตรได้ทันที`;
+
+                    certBtn.classList.remove('hidden');
+                    quizBadge.classList.remove('hidden');
+                    document.getElementById('viewCertBtn').disabled = false;
+
+                    // Update Cert Dynamic text
+                    document.getElementById('certScore').textContent = `${percentage.toFixed(0)}%`;
+                    document.getElementById('certDate').textContent = `วันที่ออกเอกสาร: ${resultDate}`;
+
+                    // Confetti Effect
+                    try {
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+                    } catch(e){}
+                } else {
+                    icon.className = "w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 border-4 bg-rose-500/20 text-rose-400 border-rose-500/40";
+                    icon.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+                    document.getElementById('resultTitle').textContent = "ยังไม่ผ่านเกณฑ์การประเมิน";
+
+                    statusBox.className = "p-4 rounded-2xl mb-6 text-sm font-sarabun bg-rose-500/10 border border-rose-500/30 text-rose-300";
+                    statusBox.innerHTML = `คุณยังได้คะแนนไม่ถึงเกณฑ์ 70% (7 คะแนนขึ้นไป) แนะนำให้ทบทวนบทเรียนในศูนย์การเรียนรู้อีกครั้งและเริ่มทำแบบทดสอบใหม่`;
+
+                    certBtn.classList.add('hidden');
+                }
+            },
+
+            openCertificate() {
+                if (!this.student) {
+                    document.getElementById('studentGatekeeperModal').classList.remove('hidden');
+                    return;
+                }
+                if (!this.quiz.passed) {
+                    alert('ต้องผ่านแบบทดสอบอย่างน้อย 70% (7/10 คะแนน) จึงจะเปิดใบประกาศนียบัตรได้');
+                    this.switchTab('quiz');
+                    return;
+                }
+                this.updateStudentHeader();
+                document.getElementById('certModal').classList.remove('hidden');
+            },
+
+            closeCertificate() {
+                document.getElementById('certModal').classList.add('hidden');
+            }
+        };
+
+        // Initialize App on DOM Load
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/config');
+                if (!response.ok) throw new Error('ไม่สามารถโหลดการตั้งค่า Supabase ได้');
+                const config = await response.json();
+                if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('กรุณาตั้งค่า SUPABASE_URL และ SUPABASE_ANON_KEY บน Vercel');
+                supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
+                    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+                });
+            } catch (error) {
+                console.error('Supabase initialization error:', error);
+                const authMessage = document.getElementById('authMessage');
+                if (authMessage) { authMessage.textContent = error.message; authMessage.className = 'p-3 rounded-xl text-xs bg-rose-500/10 border border-rose-500/30 text-rose-300'; }
+            }
+            appState.init();
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    appState.closeLesson();
+                    appState.closeCertificate();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
